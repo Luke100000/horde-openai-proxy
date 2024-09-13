@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 from cachetools import TTLCache, cached
 
@@ -61,7 +62,7 @@ def estimate_size(name: str) -> float:
     return 0
 
 
-def guess_model_name(name: str) -> str | None:
+def guess_model_name(name: str) -> Optional[str]:
     name = name.lower()
     if name in MODEL_TO_BASE_MODEL:
         return MODEL_TO_BASE_MODEL[name]
