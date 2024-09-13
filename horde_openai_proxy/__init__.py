@@ -16,6 +16,11 @@ __all__ = [
     "filter_models",
 ]
 
+import os
+
+import huggingface_hub
+from dotenv import load_dotenv
+
 from .conversion import openai_to_horde, horde_to_openai
 from .horde import get_horde_completion, TextGeneration, get_horde_models
 from .model import get_models, Model
@@ -31,3 +36,8 @@ from .types import (
     ModelGenerationInput,
 )
 from .utils import filter_models
+
+load_dotenv()
+
+if os.getenv("HF_TOKEN"):
+    huggingface_hub.login(token=os.getenv("HF_TOKEN"))

@@ -56,8 +56,13 @@ Included are also utilities to clean up the model zoo mess:
   base model.
 * [apply_template()](horde_openai_proxy/template.py) to convert a list of messages into a prompt.
 
+## Setup
+
+Login or provide your HF token as `HF_TOKEN` env var to access restricted models.
+You also have to manually accept all baseline models.
+
 ## Maintenance
 
 * [data](horde_openai_proxy/data/__init__.py) contains mappings between (partial) names and base model, param sizes, and
   base models and their template
-* [chat_templates](chat_templates) needs to be updated once in a while
+* [chat_templates](horde_openai_proxy/chat_templates) needs to be updated once in a while
