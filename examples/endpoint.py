@@ -52,8 +52,12 @@ def post_chat_completion(
     return ChatCompletionResponse(
         id=completions[0].uuid,
         choices=[
-            {"role": "assistant", "content": completion.text}
-            for completion in completions
+            {
+                "finish_reason": "stop",
+                "index": index,
+                "message": {"role": "assistant", "content": completion.text},
+            }
+            for index, completion in enumerate(completions)
         ],
         created=int(time.time()),
         model=completions[0].model,
