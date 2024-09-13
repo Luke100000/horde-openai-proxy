@@ -7,19 +7,19 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-cachetools = "^5.5.0"
-fastapi = "^0.114.1"
-transformers = "^4.44.2"
-sentencepiece = "^0.2.0"
-protobuf = "^5.28.1"
-jinja2 = "^3.1.4"
-python-dotenv = "^1.0.1"
+cachetools = "*"
+fastapi = "*"
+transformers = "*"
+sentencepiece = "*"
+protobuf = "*"
+jinja2 = "*"
+python-dotenv = "*"
 
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.6.4"
-pre-commit = "^3.8.0"
-pytest = "^8.3.3"
+ruff = "*"
+pre-commit = "*"
+pytest = "*"
 
 
 [tool.poetry.group.fastapi]
