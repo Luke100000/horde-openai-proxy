@@ -1,4 +1,5 @@
 import json
+import os
 from dataclasses import dataclass
 from functools import cache
 from typing import Optional
@@ -17,7 +18,11 @@ def get_tokenizer(model: str) -> PreTrainedTokenizerBase:
     """
     data = BASE_MODELS[model]
     tokenizer = AutoTokenizer.from_pretrained(data["model"], trust_remote_code=True)
-    template = open(f"./chat_templates/chat_templates/{data['template']}.jinja").read()
+    template_path = os.path.join(
+        os.path.dirname(__file__),
+        f"../chat_templates/chat_templates/{data['template']}.jinja",
+    )
+    template = open(template_path).read()
     template = template.replace("    ", "").replace("\n", "")
     tokenizer.chat_template = template
     return tokenizer
@@ -37,9 +42,12 @@ def get_generation_config(model: str) -> GenerationConfig:
     :return: GenerationConfig
     """
     if BASE_MODELS[model]["config"]:
-        with open(
-            f"./chat_templates/generation_configs/{BASE_MODELS[model]['config']}.json"
-        ) as f:
+        config_path = os.path.join(
+            os.path.dirname(__file__),
+            f"../chat_templates/generation_configs/{BASE_MODELS[model]['config']}.json",
+        )
+
+        with open(config_path) as f:
             config = json.load(f)
     else:
         config = {"stop_str": None, "stop_token_ids": [], "system_prompt": None}
