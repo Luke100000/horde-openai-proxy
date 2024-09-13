@@ -41,3 +41,10 @@ class HordeRequest(BaseModel):
     models: List[str] = Field(...)
     timeout: int = Field((60 * 20) - 30)
     params: ModelGenerationInput
+
+
+class TextGeneration(BaseModel):
+    uuid: str
+    model: str
+    text: str
+    kudos: int

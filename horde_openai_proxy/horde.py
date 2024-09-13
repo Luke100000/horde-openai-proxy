@@ -1,10 +1,9 @@
 import time
-from dataclasses import dataclass
 from typing import List
 
 import requests
 
-from .types import HordeRequest
+from .types import HordeRequest, TextGeneration
 
 
 def cleanup_response(text: str, model: str) -> str:
@@ -19,14 +18,6 @@ def cleanup_response(text: str, model: str) -> str:
     for stop_word in get_generation_config(models[model].base_model).stop_words:
         text = text.rstrip(stop_word).strip()
     return text
-
-
-@dataclass
-class TextGeneration:
-    uuid: str
-    model: str
-    text: str
-    kudos: int
 
 
 def get_data(response: requests.Response):

@@ -1,9 +1,14 @@
+import time
+from typing import List
+
 from .model import get_models
 from .template import apply_template, get_generation_config
 from .types import (
     ChatCompletionRequest,
     HordeRequest,
     ModelGenerationInput,
+    TextGeneration,
+    ChatCompletionResponse,
 )
 
 
@@ -69,4 +74,30 @@ def horde_to_openai(request: HordeRequest) -> ChatCompletionRequest:
         temperature=params.temperature,
         top_p=params.top_p,
         timeout=request.timeout,
+    )
+
+
+def completions_to_openai_response(
+    completions: List[TextGeneration],
+) -> ChatCompletionResponse:
+    """
+    Convert a list of completions to an OpenAI response.
+    :param completions: List of completions
+    :return: OpenAI response
+    """
+    return ChatCompletionResponse(
+        id=completions[0].uuid,
+        choices=[
+            {
+                "finish_reason": "stop",
+                "index": index,
+                "message": {"role": "assistant", "content": completion.text},
+            }
+            for index, completion in enumerate(completions)
+        ],
+        created=int(time.time()),
+        model=completions[0].model,
+        usage={
+            "kudos": completions[0].kudos,
+        },
     )

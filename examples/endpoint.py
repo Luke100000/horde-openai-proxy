@@ -1,4 +1,3 @@
-import time
 from typing import List
 
 from fastapi import FastAPI, HTTPException
@@ -10,6 +9,7 @@ from horde_openai_proxy import (
     Model,
     get_horde_completion,
     openai_to_horde,
+    completions_to_openai_response,
     filter_models,
 )
 
@@ -49,19 +49,4 @@ def post_chat_completion(
     except ValueError as e:
         raise HTTPException(status_code=406, detail=str(e))
 
-    return ChatCompletionResponse(
-        id=completions[0].uuid,
-        choices=[
-            {
-                "finish_reason": "stop",
-                "index": index,
-                "message": {"role": "assistant", "content": completion.text},
-            }
-            for index, completion in enumerate(completions)
-        ],
-        created=int(time.time()),
-        model=completions[0].model,
-        usage={
-            "kudos": completions[0].kudos,
-        },
-    )
+    return completions_to_openai_response(completions)
