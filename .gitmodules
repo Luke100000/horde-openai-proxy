@@ -1,0 +1,3 @@
+[submodule "chat_templates"]
+	path = chat_templates
+	url = https://github.com/chujiezheng/chat_templates
