@@ -6,7 +6,7 @@ authors = ["Luke100000 <jonas.peche@aon.at>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.9"
 cachetools = "^5.5.0"
 fastapi = "^0.114.1"
 transformers = "^4.44.2"
