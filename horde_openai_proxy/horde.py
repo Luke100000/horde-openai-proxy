@@ -112,6 +112,8 @@ def get_horde_completion(
                     )
                 )
             return generations
+        else:
+            time.sleep(0.5)
 
     raise ValueError("Request timed out.")
 
