@@ -1,4 +1,5 @@
 import time
+from json import JSONDecodeError
 from typing import List
 
 import requests
@@ -7,6 +8,12 @@ from .types import HordeRequest, TextGeneration
 
 
 def cleanup_response(text: str, model: str) -> str:
+    """
+    Clean up the response text by removing trailing stop words.
+    :param text:
+    :param model:
+    :return:
+    """
     from .model import get_models
     from .template import get_generation_config
 
@@ -24,7 +31,7 @@ def get_data(response: requests.Response):
     if response.status_code != 200 and response.status_code != 202:
         try:
             message = response.json().get("message")
-        except Exception:
+        except (JSONDecodeError, KeyError):
             message = response.status_code
         raise ValueError(f"Error: {message}")
     return response.json()

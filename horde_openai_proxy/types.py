@@ -4,6 +4,8 @@ from pydantic import BaseModel, Field
 
 
 class ChatCompletionRequest(BaseModel):
+    """An OpenAI Chat Completion request."""
+
     model_config = {"extra": "ignore"}
 
     messages: list[dict]
@@ -19,6 +21,8 @@ class ChatCompletionRequest(BaseModel):
 
 
 class ChatCompletionResponse(BaseModel):
+    """An OpenAI Chat Completion response."""
+
     id: str
     choices: list[dict]
     created: int
@@ -27,16 +31,29 @@ class ChatCompletionResponse(BaseModel):
 
 
 class ModelGenerationInput(BaseModel):
-    max_context_length: int
-    max_length: Optional[int]
-    n: Optional[int]
-    rep_pen: Optional[float]
-    stop_sequence: List[str]
-    temperature: Optional[float]
-    top_p: Optional[float]
+    """A (partial) KoboldAI generation input."""
+
+    model_config = {"extra": "ignore"}
+
+    max_context_length: int = 2048
+    max_length: Optional[int] = 512
+    n: Optional[int] = None
+    rep_pen: Optional[float] = None
+    stop_sequence: List[str] = []
+    temperature: Optional[float] = None
+    top_p: Optional[float] = None
+
+    # Additional formatting options, handled by the proxy
+    frmtadsnsp: bool = False
+    frmtrmblln: bool = False
+    frmtrmspch: bool = False
+    frmttriminc: bool = False
+    singleline: bool = False
 
 
 class HordeRequest(BaseModel):
+    """A request to the Horde API."""
+
     prompt: str = Field(...)
     models: List[str] = Field(...)
     timeout: int = Field((60 * 20) - 30)
@@ -44,6 +61,8 @@ class HordeRequest(BaseModel):
 
 
 class TextGeneration(BaseModel):
+    """A generated text returned from the Horde."""
+
     uuid: str
     model: str
     text: str

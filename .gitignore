@@ -1,3 +1,5 @@
 .idea
 .venv
 .env
+
+bridge_config.yaml

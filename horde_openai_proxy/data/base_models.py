@@ -80,12 +80,12 @@ BASE_MODELS = {
         "config": "openchat-3.5",
     },
     "zephyr": {
-        "model": "zephyr-7b-alpha",
+        "model": "HuggingFaceH4/zephyr-7b-alpha",
         "template": "zephyr",
         "config": "zephyr",
     },
     "vicuna": {
-        "model": "vicuna-7b-v1.5",
+        "model": "lmsys/vicuna-7b-v1.5",
         "template": "vicuna",
         "config": "vicuna",
     },
