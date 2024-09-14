@@ -28,6 +28,13 @@ optional = true
 [tool.poetry.group.fastapi.dependencies]
 uvicorn = "^0.30.6"
 
+
+[tool.poetry.group.bridge]
+optional = true
+
+[tool.poetry.group.bridge.dependencies]
+openai = "^1.45.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

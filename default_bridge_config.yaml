@@ -1,0 +1,59 @@
+# API Key
+api_key: ""
+
+# Additional usernames to prioritize
+priority_usernames: []
+
+# Polling interval in seconds
+interval: 1.0
+
+# Prints stats every x seconds
+stats_interval: 60.0
+
+# The worker name
+name: "My Ollama Worker"
+
+# The bridge agent name
+bridge_agent: "Horde-OpenAI-Proxy:0:https://github.com/Luke100000/horde-openai-proxy"
+
+# The backend name, appended to the model name
+backend: ollama
+
+# Backend specific configuration
+ollama_url: http://localhost:11434
+
+# Backend API Key
+backend_api_key: "unused"
+
+# The base URL of the backend
+backend_url: http://localhost:11434/v1
+
+# The Horde Cluster base URL
+horde_url: https://stablehorde.net
+
+# Models
+models:
+#  - all
+  - phi3:latest
+
+# Allow NSFW
+nsfw: true
+
+# Require upfront kudos, anonymous and broke users
+require_upfront_kudos: false
+
+# Turn this on when you run on very slow CPUs
+extra_slow_worker: false
+
+# Max tokens to generate
+max_length: 512
+
+# Max context length in tokens
+max_context_length: 2048
+
+# Logging level
+logging_level: 20
+
+# Parallelism
+parallelism: 4
+queue: 1
