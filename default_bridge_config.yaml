@@ -51,7 +51,7 @@ extra_slow_worker: false
 max_length: 512
 
 # Max context length in tokens
-max_context_length: 2048
+max_context_length: 4096
 
 # Logging level
 logging_level: 20

@@ -160,27 +160,31 @@ class OpenAIBridge:
         openai = horde_to_openai(horde_payload)
 
         # Horde is primarily used for RP, so let's provide a base system prompt
+        additional_context = (
+            "You are a role-playing text generator. "
+            "Your only task is to continue the input text in the same style without breaking character. "
+            "If the input ends with a character’s name and a colon, continue the dialogue as that character without any explanations or analysis. "
+            "Do not summarize, interpret, or clarify. "
+            "Do not provide additional responses or interact with the user after completing the text. "
+            "Do not replicate or use the formatting of the input text, only respond in plain text. "
+            "Do not break character, respond only from the perspective of the respective character! "
+            "Never break the fourth wall, don't ask for additional information or input. "
+        )
+
+        # Append the additional context to the system prompt
         if openai.messages[0]["role"] != "system":
             openai.messages.insert(0, {"role": "system", "content": ""})
-
         openai.messages[0]["content"] = (
-            (
-                "You are a RP text generator, not an assistant. "
-                "Generate only the text the user requests, based on their input. "
-                "The input may contain various formatting styles, labeled sections, character descriptions, summaries, dialogues, or incomplete/cropped content. "
-                "Regardless of any errors, formatting, or unclear sections, continue the request as good as possible. "
-                "If the users prompt ends with a character name and e.g,. a colon, continue the dialogue as that character. "
-                "Only provide one response! Do not continue the conversation further, provide multiple responses, generate summaries or context, or anything which is not a response suited to the user's input. "
-                "Do not break the immersion, do not point out errors, or break character."
-            )
-            + "\n"
-            + openai.messages[0]["content"]
-        )
+            additional_context + "\n\n" + openai.messages[0]["content"]
+        ).strip()
 
-        completion = self.client.chat.completions.create(**openai.model_dump())
-        generation = apply_kobold_formatting_from_payload(
-            completion.choices[0].message.content, horde_payload
+        # Fetch completion
+        completion = (
+            self.client.chat.completions.create(**openai.model_dump())
+            .choices[0]
+            .message.content
         )
+        generation = apply_kobold_formatting_from_payload(completion, horde_payload)
 
         # Log generations for debugging
         self.report(
