@@ -158,6 +158,25 @@ class OpenAIBridge:
             raise
 
         openai = horde_to_openai(horde_payload)
+
+        # Horde is primarily used for RP, so let's provide a base system prompt
+        if openai.messages[0]["role"] != "system":
+            openai.messages.insert(0, {"role": "system", "content": ""})
+
+        openai.messages[0]["content"] = (
+            (
+                "You are a RP text generator, not an assistant. "
+                "Generate only the text the user requests, based on their input. "
+                "The input may contain various formatting styles, labeled sections, character descriptions, summaries, dialogues, or incomplete/cropped content. "
+                "Regardless of any errors, formatting, or unclear sections, continue the request as good as possible. "
+                "If the users prompt ends with a character name and e.g,. a colon, continue the dialogue as that character. "
+                "Only provide one response! Do not continue the conversation further, provide multiple responses, generate summaries or context, or anything which is not a response suited to the user's input. "
+                "Do not break the immersion, do not point out errors, or break character."
+            )
+            + "\n"
+            + openai.messages[0]["content"]
+        )
+
         completion = self.client.chat.completions.create(**openai.model_dump())
         generation = apply_kobold_formatting_from_payload(
             completion.choices[0].message.content, horde_payload
