@@ -1,7 +1,7 @@
 import re
 from typing import List
 
-from . import ModelGenerationInput
+from . import HordeRequest
 from .data import BASE_MODELS
 from .model import get_models, Model
 from .template import get_tokenizer
@@ -63,6 +63,7 @@ def trim_incomplete_sentence(txt: str) -> str:
 
 def apply_kobold_formatting(
     text: str,
+    prompt: str,
     frmtadsnsp: bool = True,
     frmtrmblln: bool = True,
     frmtrmspch: bool = True,
@@ -72,6 +73,7 @@ def apply_kobold_formatting(
     """
     Apply KoboldAI formatting to the text.
     :param text: The text to format
+    :param prompt: The prompt used to generate the text
     :param frmtadsnsp: Adds a leading space to your input if there is no trailing whitespace at the end of the previous action.
     :param frmtrmblln: Replaces all occurrences of two or more consecutive newlines in the output with one newline.
     :param frmtrmspch: Removes #/@%}{+=~|^<> from the output.
@@ -80,8 +82,8 @@ def apply_kobold_formatting(
     :param singleline: Removes everything after the first line of the output, including the newline.
     :return: The formatted text
     """
-    if frmtadsnsp:
-        pass
+    if frmtadsnsp and not prompt.endswith(" "):
+        text = " " + text
     if frmtrmblln:
         text = text.replace("\n\n", "\n")
     if frmtrmspch:
@@ -93,9 +95,7 @@ def apply_kobold_formatting(
     return text
 
 
-def apply_kobold_formatting_from_payload(
-    text: str, payload: ModelGenerationInput
-) -> str:
+def apply_kobold_formatting_from_payload(text: str, payload: HordeRequest) -> str:
     """Apply KoboldAI formatting to the text using the payload.
     :param text: The text to format
     :param payload: The payload containing the formatting options
@@ -103,11 +103,12 @@ def apply_kobold_formatting_from_payload(
     """
     return apply_kobold_formatting(
         text,
-        payload.frmtadsnsp,
-        payload.frmtrmblln,
-        payload.frmtrmspch,
-        payload.frmttriminc,
-        payload.singleline,
+        payload.prompt,
+        payload.params.frmtadsnsp,
+        payload.params.frmtrmblln,
+        payload.params.frmtrmspch,
+        payload.params.frmttriminc,
+        payload.params.singleline,
     )
 
 

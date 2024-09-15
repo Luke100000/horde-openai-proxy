@@ -33,8 +33,10 @@ horde_url: https://stablehorde.net
 
 # Models
 models:
-#  - all
-  - phi3:latest
+  - all  # This will use all models available, Ollama only
+
+# Offer only loaded models, but switch when no jobs are found
+dynamic_models: false
 
 # Allow NSFW
 nsfw: true
@@ -53,6 +55,9 @@ max_context_length: 2048
 
 # Logging level
 logging_level: 20
+
+# Dump requests to output/type for debugging, available types are "error", "debug"
+report_types: []
 
 # Parallelism
 parallelism: 4

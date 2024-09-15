@@ -2,7 +2,7 @@ import time
 from typing import List
 
 from .model import get_models
-from .template import apply_template, get_generation_config
+from .template import apply_template, get_generation_config, prompt_to_messages
 from .types import (
     ChatCompletionRequest,
     HordeRequest,
@@ -47,30 +47,37 @@ def openai_to_horde(
     )
 
 
-def horde_to_openai(request: HordeRequest) -> ChatCompletionRequest:
+def horde_to_openai(
+    request: HordeRequest, *, include_base_stops: bool = True
+) -> ChatCompletionRequest:
     """
     Convert a Horde request to an OpenAI request.
 
     :param request: The Horde request
+    :param include_base_stops: Whether to include base stops
     :return: The OpenAI request
     """
     params = request.params
     if params is None:
         raise ValueError("Request params are required")
 
+    base_stops = [
+        "<|",
+        "<eos>",
+        "</s>",
+    ]
+
     return ChatCompletionRequest(
-        messages=[
-            {
-                "content": request.prompt,
-                "role": "user",
-            }
-        ],
+        messages=prompt_to_messages(request.prompt),
         model=request.models[0],
         frequency_penalty=params.rep_pen,
         presence_penalty=None,
         max_tokens=params.max_length,
         n=params.n,
-        stop=[] if params.stop_sequence is None else params.stop_sequence,
+        stop=(
+            ([] if params.stop_sequence is None else params.stop_sequence)
+            + (base_stops if include_base_stops else [])
+        )[:4],
         temperature=params.temperature,
         top_p=params.top_p,
         timeout=request.timeout,

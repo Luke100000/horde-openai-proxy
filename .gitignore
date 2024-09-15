@@ -2,4 +2,6 @@
 .venv
 .env
 
+reports
+
 bridge_config.yaml
