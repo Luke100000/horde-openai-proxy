@@ -295,7 +295,10 @@ class OpenAIBridge:
                     for reason, count in pop["skipped"].items()
                     if count > 0
                 ]
-                self.logger.debug(f"No jobs available: {', '.join(reasons)}")
+                if reasons:
+                    self.logger.info(f"No jobs available: {', '.join(reasons)}")
+                else:
+                    self.logger.debug("No jobs available.")
                 time.sleep(self.config.interval)
                 self.no_jobs = True
         else:
@@ -344,16 +347,17 @@ class OpenAIBridge:
             else:
                 reward = submit_request.json()["reward"]
                 self.logger.info(
-                    f"Generation submitted for {reward} Kudos, took {generation.time:.2f}s at {generation.prefill_tps:.1f} prefill tps, {generation.generation_tps:.1f} generation tps, {reward / generation.time:.2f} Kudos/s."
+                    f"Generation submitted for {reward:.1f} Kudos, took {generation.time:.2f}s at {generation.prefill_tps:.1f} prefill tps, {generation.generation_tps:.1f} generation tps, {reward / generation.time:.2f} Kudos/s."
                 )
                 self.submitted.increment()
                 self.failed_in_a_row.set(0)
+                self.kudos.increment(reward)
 
     def fetch_loop(self):
         """Fetcher thread to fetch new jobs from the Horde."""
         while self.run:
             self.fetches += 1
-            if self.task_queue.empty():
+            if self.task_queue.empty() and self.processing.get() == 0:
                 self.idle += 1
             self.utilization += self.processing.get() / self.config.parallelism
 

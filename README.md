@@ -8,10 +8,11 @@ Utilities to convert from the Horde LLM endpoint format to the OpenAI Chat API f
 ## Differences
 
 Features are restricted to the intersection of both APIs:
+
 ### Horde to OpenAI
 
 * Formatting is not supported (`frmtadsnsp`, `frmtrmblln`, `frmtrmspch`, `frmttriminc`, `singleline`)
-  * Could be done by post-processing the response, similar to how stop words are handled already
+    * There are utility functions for this tho and can be done by the proxy.
 * `max_context_length` is a constant passed to the converter.
 * Not supported at all are a, k, tfs, and typical sampling, and `rep_pen_range`, `rep_pen_slope`,
   `use_default_badwordsids`, `smoothing_factor`, `dynatemp_range`, `dynatemp_exponent`
@@ -45,8 +46,7 @@ the OpenAI API, with a utility endpoint to retrieve filtered models.
 
 ## As bridge
 
-WIP, no ETA, probably useless, let's see. Formatting flags like `frmtrmblln` would need to be reimplemented and some
-specific sampler settings are not part of the OpenAI API.
+[`horde_openai_proxy/bridge.py`](examples/bridge.py) provides an example bridge, however it heavily struggles with keeping character.
 
 ## Utilities
 

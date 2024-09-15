@@ -60,5 +60,5 @@ logging_level: 20
 report_types: []
 
 # Parallelism
-parallelism: 4
+parallelism: 2
 queue: 1
