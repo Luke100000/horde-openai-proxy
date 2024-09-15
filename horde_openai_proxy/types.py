@@ -43,11 +43,11 @@ class ModelGenerationInput(BaseModel):
     temperature: Optional[float] = None
     top_p: Optional[float] = None
 
-    # Additional formatting options, handled by the proxy
-    frmtadsnsp: bool = False
+    # Additional formatting options, handled by the proxy. It uses KoboldAI's GUI defaults!
+    frmtadsnsp: bool = True
     frmtrmblln: bool = False
     frmtrmspch: bool = False
-    frmttriminc: bool = False
+    frmttriminc: bool = True
     singleline: bool = False
 
 

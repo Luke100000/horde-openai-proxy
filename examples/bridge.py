@@ -231,7 +231,7 @@ class OpenAIBridge:
             "name": self.config.name,
             "priority_usernames": self.config.priority_usernames,
             "nsfw": self.config.nsfw,
-            "models": models,
+            "models": [self.config.backend + "/" + model for model in models],
             "bridge_agent": self.config.bridge_agent,
             "threads": self.config.parallelism,
             "require_upfront_kudos": self.config.require_upfront_kudos,
@@ -258,7 +258,11 @@ class OpenAIBridge:
                     f"Job received with {payload.get('n', 1)}x {len(payload['prompt'])} characters and {payload.get('max_length', self.config.max_length)} output tokens."
                 )
                 self.task_queue.put(
-                    Task(uuid=pop["id"], model=pop["model"], payload=payload)
+                    Task(
+                        uuid=pop["id"],
+                        model=pop["model"].split("/", 1)[-1],
+                        payload=payload,
+                    )
                 )
                 self.no_jobs = False
             else:
@@ -337,7 +341,7 @@ class OpenAIBridge:
                 - self.task_queue.qsize()
                 - self.processing.get()
             )
-            if amount < 0:
+            if amount <= 0:
                 self.logger.debug("No capacity for new generation")
                 time.sleep(self.config.interval)
                 continue
@@ -449,13 +453,14 @@ class OpenAIBridge:
         if report_type in self.config.report_types:
             path = Path(f"reports/{report_type}")
             path.mkdir(exist_ok=True, parents=True)
-            with open(path / f"{time.time()}.txt", "w") as f:
+            identifier = str(time.time())
+            with open(path / f"{identifier}.txt", "w") as f:
                 f.write(f"Model: {model}\n")
                 f.write("----------------\n")
                 f.write(prompt + "\n")
                 f.write("----------------\n")
                 f.write(generation)
-            with open(path / f"{time.time()}.json", "w") as f:
+            with open(path / f"{identifier}.json", "w") as f:
                 json.dump(payload, f, indent=2)
 
     def start(self):

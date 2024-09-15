@@ -82,7 +82,7 @@ def apply_kobold_formatting(
     :param singleline: Removes everything after the first line of the output, including the newline.
     :return: The formatted text
     """
-    if frmtadsnsp and not prompt.endswith(" "):
+    if frmtadsnsp and not prompt.endswith(" ") and not prompt.endswith("\n"):
         text = " " + text
     if frmtrmblln:
         text = text.replace("\n\n", "\n")

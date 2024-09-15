@@ -79,7 +79,7 @@ def horde_to_openai(
             + (base_stops if include_base_stops else [])
         )[:4],
         temperature=params.temperature,
-        top_p=params.top_p,
+        top_p=None if params.top_p == 1.0 else params.top_p,
         timeout=request.timeout,
     )
 
