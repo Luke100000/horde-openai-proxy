@@ -88,6 +88,6 @@ def test_from_prompt():
                 # Compare
                 assert len(messages) == len(restored)
                 for m1, m2 in zip(messages, restored):
-                    assert m1["role"] == m2["role"]
-                    assert m1["content"] == m2["content"]
+                    assert m1["role"] == m2["role"], base_model
+                    assert m1["content"] == m2["content"], base_model
                 messages.pop(0)

@@ -72,7 +72,7 @@ def apply_template(conversation: list, model: str) -> str:
     """
     Apply the chat template to the conversation
     :param conversation:  List of messages
-    :param model: Model name
+    :param model: Model name on Hugging Face
     :return: Prepared prompt
     """
     if "system" not in {m["role"] for m in conversation}:
@@ -99,7 +99,7 @@ def to_role(role: str) -> str:
 
 
 def generic_clean(prompt: str) -> str:
-    return prompt.replace("<|eot_id|>", "\n").strip("<s>").strip("</s>")
+    return prompt.replace("<|eot_id|>", "\n").strip("<s>").strip("</s>").strip()
 
 
 def cleanup_messages(messages: list) -> list:
@@ -155,11 +155,10 @@ class Parser:
 
 
 def _prompt_to_messages_llama3_instruct(parser: Parser) -> None:
-    parser.read_until("<|start_header_id|>")
-
     while not parser.done():
+        parser.read_until("<|start_header_id|>")
         role = parser.read_until("<|end_header_id|>")
-        content = parser.read_until("<|start_header_id|>")
+        content = parser.read_until("<|eot_id|>")
         parser.add(role, content)
 
 

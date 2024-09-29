@@ -16,8 +16,11 @@ MODEL_TO_BASE_MODEL = {
     "l3-lunaris": "llama-3-instruct",
     "l3-stheno": "llama-3-instruct",
     "moistral": "alpaca",
-    "nemomix": "chatml",
-    "chronos-gold": "chatml",
+    "nemomix": "mistral-instruct",
+    "rocinante": "mistral-instruct",  # Trained on ChatML, Alpaca, and Mistral
+    "cydonia": "mistral-instruct",
+    "chronos-gold": "custom-chatml",
+    "2b_or_not_2b": "custom-chatml",
     "neuraldaredevil-abliterated": "llama-3-instruct",
     "psyonic-cetacean": "orca-2",
     "pygmalion": "alpaca",
@@ -32,4 +35,7 @@ MODEL_TO_BASE_MODEL = {
     "command-r": "openchat-3.5",
     "llama2": "llama-2-chat",
     "llama-3": "llama-3-instruct",
+    "phi-3": "phi-3-instruct",
+    # Too generic
+    "ad": "custom-chatml",
 }

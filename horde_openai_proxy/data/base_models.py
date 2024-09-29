@@ -1,3 +1,7 @@
+"""
+A mapping from base model to tokenizer, template, and config.
+"""
+
 BASE_MODELS = {
     "llama-3.1-instruct": {
         "model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
@@ -15,7 +19,7 @@ BASE_MODELS = {
         "config": "llama-2-chat",
     },
     "codellama-instruct": {
-        "model": "meta-llama/Llama-2-7b-chat-hf",
+        "model": "meta-llama/CodeLlama-7b-Instruct-hf",
         "template": "llama-2-chat",
         "config": "llama-2-chat",
     },
@@ -25,18 +29,13 @@ BASE_MODELS = {
         "config": "qwen2-instruct",
     },
     "qwen1.5-chat": {
-        "model": "Qwen/Qwen2-7B-Instruct",
+        "model": "Qwen/Qwen1.5-7B-Chat",
         "template": "chatml",
         "config": "qwen2-instruct",
     },
     "mistral-instruct": {
         "model": "mistralai/Mistral-7B-Instruct-v0.3",
         "template": "mistral-instruct",
-        "config": "mistral-instruct",
-    },
-    "chatml": {
-        "model": "mistralai/Mistral-7B-Instruct-v0.3",
-        "template": "chatml",
         "config": "mistral-instruct",
     },
     "phi-3-instruct": {
@@ -50,7 +49,7 @@ BASE_MODELS = {
         "config": "yi-chat",
     },
     "yi-chat": {
-        "model": "01-ai/Yi-1.5-6B-Chat",
+        "model": "01-ai/Yi-6B-Chat",
         "template": "chatml",
         "config": "yi-chat",
     },
@@ -60,7 +59,7 @@ BASE_MODELS = {
         "config": "gemma-it",
     },
     "gemma-2-it": {
-        "model": "google/gemma-7b-it",
+        "model": "google/gemma-2-9b-it",
         "template": "gemma-it",
         "config": "gemma-it",
     },
@@ -75,7 +74,7 @@ BASE_MODELS = {
         "config": "openchat-3.5",
     },
     "starling-lm": {
-        "model": "openchat/openchat_3.5",
+        "model": "berkeley-nest/Starling-LM-7B-alpha",
         "template": "openchat-3.5",
         "config": "openchat-3.5",
     },
@@ -118,5 +117,11 @@ BASE_MODELS = {
         "model": "IlyaGusev/saiga_mistral_7b_lora",
         "template": "saiga",
         "config": "saiga",
+    },
+    # Odd models, e.g, fine-tuned on another template than the baseline
+    "custom-chatml": {
+        "model": "mistralai/Mistral-7B-Instruct-v0.3",
+        "template": "chatml",
+        "config": "mistral-instruct",
     },
 }
