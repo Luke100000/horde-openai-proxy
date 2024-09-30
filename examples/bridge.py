@@ -42,6 +42,7 @@ class Config:
     backend_api_key: str = ""
     backend_url: str = "http://localhost:11434/v1"
     horde_url: str = "https://stablehorde.net"
+    system_prompt: str = ""
     models: List[Any] = field(default_factory=lambda: ["all"])
     dynamic_models: bool = False
 
@@ -159,23 +160,11 @@ class OpenAIBridge:
 
         openai = horde_to_openai(horde_payload)
 
-        # Horde is primarily used for RP, so let's provide a base system prompt
-        additional_context = (
-            "You are a role-playing text generator. "
-            "Your only task is to continue the input text in the same style without breaking character. "
-            "If the input ends with a character’s name and a colon, continue the dialogue as that character without any explanations or analysis. "
-            "Do not summarize, interpret, or clarify. "
-            "Do not provide additional responses or interact with the user after completing the text. "
-            "Do not replicate or use the formatting of the input text, only respond in plain text. "
-            "Do not break character, respond only from the perspective of the respective character! "
-            "Never break the fourth wall, don't ask for additional information or input. "
-        )
-
         # Append the additional context to the system prompt
         if openai.messages[0]["role"] != "system":
             openai.messages.insert(0, {"role": "system", "content": ""})
         openai.messages[0]["content"] = (
-            additional_context + "\n\n" + openai.messages[0]["content"]
+            self.config.system_prompt + "\n\n" + openai.messages[0]["content"]
         ).strip()
 
         # Fetch completion
@@ -250,11 +239,16 @@ class OpenAIBridge:
         else:
             models = self.get_available_models()
 
+        parsed = [self.parse_model(model) for model in models]
+        display_to_model = {
+            display_name: model_name for model_name, display_name in parsed
+        }
+
         gen_dict = {
             "name": self.config.name,
             "priority_usernames": self.config.priority_usernames,
             "nsfw": self.config.nsfw,
-            "models": [self.config.backend + "/" + model for model in models],
+            "models": list(display_to_model.keys()),
             "bridge_agent": self.config.bridge_agent,
             "threads": self.config.parallelism,
             "require_upfront_kudos": self.config.require_upfront_kudos,
@@ -283,7 +277,7 @@ class OpenAIBridge:
                 self.task_queue.put(
                     Task(
                         uuid=pop["id"],
-                        model=pop["model"].split("/", 1)[-1],
+                        model=display_to_model[pop["model"]],
                         payload=payload,
                     )
                 )
@@ -403,6 +397,14 @@ class OpenAIBridge:
         self.logger.info("Loaded models: " + ", ".join(self.get_loaded_models()))
         self.logger.info("Available models: " + ", ".join(self.get_available_models()))
 
+    def parse_model(self, name: str) -> tuple[str, str]:
+        """Parse the model name and display name from the model string."""
+        if "::" in name:
+            model_name, display_name = name.split("::", 1)
+            return model_name, display_name
+        else:
+            return name, self.config.backend + "/" + name
+
     def get_available_models(self) -> list[str]:
         """Get available models from the backend."""
         if self.config.backend == "ollama" and "all" in self.config.models:
@@ -455,13 +457,14 @@ class OpenAIBridge:
 
         # Check if models can generate the prompt
         for model in models:
+            model_name, _ = self.parse_model(model)
             try:
-                result = self.request(test_payload, model)
-                self.logger.info(f"Sanity check result for {model}: {result}")
+                result = self.request(test_payload, model_name)
+                self.logger.info(f"Sanity check result for {model_name}: {result}")
                 if "Horde" not in result:
-                    self.logger.warning(f"Sanity check for {model} failed!")
+                    self.logger.warning(f"Sanity check for {model_name} failed!")
             except Exception as e:
-                self.logger.error(f"Sanity check for {model} failed: {e}")
+                self.logger.error(f"Sanity check for {model_name} failed: {e}")
                 return False
 
         return True

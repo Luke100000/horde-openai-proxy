@@ -31,6 +31,9 @@ backend_url: http://localhost:11434/v1
 # The Horde Cluster base URL
 horde_url: https://stablehorde.net
 
+# An additional generic system prompt
+system_prompt: ""
+
 # Models
 models:
   - all  # This will use all models available, Ollama only

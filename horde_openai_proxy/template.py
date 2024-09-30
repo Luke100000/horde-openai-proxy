@@ -99,7 +99,7 @@ def to_role(role: str) -> str:
 
 
 def generic_clean(prompt: str) -> str:
-    return prompt.replace("<|eot_id|>", "\n").strip("<s>").strip("</s>").strip()
+    return prompt.replace("<|eot_id|>", "\n").strip("<s>").strip("</s>")
 
 
 def cleanup_messages(messages: list) -> list:
