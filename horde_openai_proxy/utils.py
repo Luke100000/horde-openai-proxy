@@ -1,5 +1,5 @@
 import re
-from typing import List
+from typing import List, Optional
 
 from . import HordeRequest
 from .data import BASE_MODELS
@@ -8,11 +8,12 @@ from .template import get_tokenizer
 
 
 def filter_models(
-    names: set[str],
-    clean_names: set[str],
-    base_models: set[str],
-    backends: set[str],
-    quant: set[str],
+    names: Optional[set[str]] = None,
+    clean_names: Optional[set[str]] = None,
+    base_models: Optional[set[str]] = None,
+    templates: Optional[set[str]] = None,
+    backends: Optional[set[str]] = None,
+    quant: Optional[set[str]] = None,
     min_size: float = 0,
     max_size: float = -1,
 ) -> List[Model]:
@@ -21,11 +22,12 @@ def filter_models(
     :param names: Raw names as used in the API
     :param clean_names: Clean names, without size, quant, backend, organization, ...
     :param base_models: Base models
-    :param backends:
-    :param quant:
-    :param min_size:
-    :param max_size:
-    :return:
+    :param templates: Instruct format templates
+    :param backends: Backends (Koboldcpp, Aphrodite, ...)
+    :param quant: Quantization (q4_k_m, ...)
+    :param min_size: Minimum size in billions of parameters
+    :param max_size: Maximum size in billions of parameters
+    :return: A filtered list of models
     """
     filtered_models = []
     for model in get_models().values():
@@ -34,6 +36,8 @@ def filter_models(
         if clean_names and model.clean_name not in clean_names:
             continue
         if base_models and model.base_model not in base_models:
+            continue
+        if templates and model.template not in templates:
             continue
         if backends and model.backend not in backends:
             continue
