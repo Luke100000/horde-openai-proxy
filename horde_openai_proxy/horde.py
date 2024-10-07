@@ -7,23 +7,15 @@ import requests
 from .types import HordeRequest, TextGeneration
 
 
-def cleanup_response(text: str, model: str) -> str:
+def remove_stop_words(text: str, stop_sequence: List[str]) -> str:
     """
     Clean up the response text by removing trailing stop words.
-    :param text:
-    :param model:
+    :param text: The text to clean up.
+    :param stop_sequence: The stop sequence to remove.
     :return:
     """
-    from .model import get_models
-    from .template import get_generation_config
-
-    models = get_models()
-    if model not in models:
-        print(f"Model {model} not known!")
-        return text
-
-    for stop_word in get_generation_config(models[model].base_model).stop_words:
-        text = text.rstrip(stop_word).strip()
+    for stop_word in stop_sequence:
+        text = text.rstrip(stop_word)
     return text
 
 
@@ -100,7 +92,10 @@ def get_horde_completion(
             # Parse the generations
             generations = []
             for generation in data["generations"]:
-                text = cleanup_response(generation["text"], generation["model"])
+                text = remove_stop_words(
+                    generation["text"],
+                    request.params.stop_sequence,
+                )
                 generations.append(
                     TextGeneration(
                         uuid=str(uuid),

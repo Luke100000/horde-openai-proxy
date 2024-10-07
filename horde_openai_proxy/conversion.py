@@ -30,6 +30,15 @@ def openai_to_horde(
         raise ValueError(f"Model {primary_model} not known!")
     base_model = models[primary_model].base_model
 
+    # Fetch all stop words which may be used
+    # One should not mix base_models, but if one does, at least stop works
+    all_stops = set()
+    for model_name in model_names:
+        if model_name in models:
+            all_stops.update(
+                get_generation_config(models[model_name].base_model).stop_words
+            )
+
     return HordeRequest(
         prompt=apply_template(request.messages, base_model),
         models=model_names,
@@ -40,7 +49,7 @@ def openai_to_horde(
             n=request.n,
             rep_pen=request.frequency_penalty,
             stop_sequence=([] if request.stop is None else request.stop)
-            + get_generation_config(base_model).stop_words,
+            + list(all_stops),
             temperature=request.temperature,
             top_p=request.top_p,
         ),
